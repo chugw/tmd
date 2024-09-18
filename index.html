@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Styled Chatbot</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #f6f6f6;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .chat-header .header-icons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-header .header-icons i {
+            cursor: pointer;
+        }
+
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        #output {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .user-message, .bot-message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .user-message {
+            margin-left: auto;
+            background-color: #d1e7dd;
+            text-align: right;
+        }
+
+        .bot-message {
+            margin-right: auto;
+            background-color: #f1f1f1;
+        }
+
+        .profile-pic {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: #f6f6f6;
+        }
+
+        #send-btn {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #send-btn:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>ENERGIZE Pro</h2>
+            <div class="header-icons">
+                <i>🔔</i>
+                <i>📖</i>
+                <i>☰</i>
+            </div>
+        </div>
+        
+        <div id="chat-window">
+            <div id="output"></div>
+        </div>
+
+        <div class="input-area">
+            <input id="user-input" type="text" placeholder="메시지를 입력하세요..." />
+            <button id="send-btn">➤</button>
+        </div>
+    </div>
+    <script>
+        // JavaScript 코드
+        document.getElementById('send-btn').addEventListener('click', function() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() !== '') {
+                addMessage(userInput, 'user-message');
+                getBotResponse(userInput);
+                document.getElementById('user-input').value = ''; // Clear input field
+            }
+        });
+    
+        function addMessage(message, className) {
+            const outputDiv = document.getElementById('output');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${className}`;
+            
+            const messageContent = document.createElement('div');
+    
+            if (className === 'user-message') {
+                messageContent.innerHTML = message.replace(/\n/g, '<br>');
+                messageDiv.appendChild(messageContent);
+            } else {
+                const profilePic = document.createElement('img');
+                profilePic.src = 'dande.png'; // 로컬에 저장된 프로필 이미지 경로
+                profilePic.className = 'profile-pic';
+                messageDiv.appendChild(profilePic);
+                messageDiv.appendChild(messageContent);
+    
+                // 텍스트를 한 글자씩 출력하는 함수 호출
+                typeWriterEffect(messageContent, message);
+            }
+    
+            outputDiv.appendChild(messageDiv);
+            outputDiv.scrollTop = outputDiv.scrollHeight; // Scroll to the bottom
+        }
+    
+        function typeWriterEffect(element, text, speed = 50) {
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    // HTML 줄바꿈 처리를 위해 개행문자를 <br>로 변환
+                    if (text.charAt(i) === '\n') {
+                        element.innerHTML += '<br>';
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+    
+        function getBotResponse(input) {
+            // 다양한 ESG 관련 질문에 대한 응답 로직
+            let response = '';
+            if (input.includes('온실가스 배출 현황') || input.includes('A공장')) {
+                response = '• 연간 CO2, CH4, N2O 배출량: 2000톤\n• 주간 CO2, CH4, N2O 배출량: 38.5톤\n• 일일 CO2, CH4, N2O 배출량: 5.5톤\n• 배출 기여가 가장 높은 생산라인: A라인';
+            } else if (input.includes('EU 평균 탄소 배출량')) {
+                response = '• EU 글로벌 평균 제조업 탄소 배출량: 1500톤\n• 국내 평균 제조업 CO2, CH4, N2O 배출계수: 1.8톤/단위 생산';
+            } else if (input.includes('줄여야하는 온실가스')) {
+                response = '• 이번 달까지 줄여야하는 온실가스 배출량: 120톤\n• 현재 적절 온실가스 배출량: 1800톤';
+            } else if (input.includes('생산라인별 배출량')) {
+                response = '• A라인: 800톤/년\n• B라인: 600톤/년\n• C라인: 400톤/년';
+            } else if (input.includes('실시간 모니터링') || input.includes('온실가스 모니터링')) {
+                response = '• 다양한 센서 및 IoT 장치를 통해 생산 과정에서 발생하는 배출량을 실시간으로 수집\n• 머신러닝 알고리즘을 사용하여 데이터 패턴을 분석하고, 이상 배출을 감지하여 즉각적인 대응 가능\n• 클라우드 기반의 데이터 분석 시스템을 통해 생산 라인별, 제품별 배출량을 지속적으로 모니터링';
+            } else if (input.includes('최적화 이점') || input.includes('ESG 최적화')) {
+                response = '• 생산 공정의 효율성을 높여 에너지 소비 및 배출량을 감소시킴\n• 실시간 데이터 분석을 통해 예측 가능한 유지보수를 지원하여 장비 효율을 향상\n• 최적화된 자원 사용을 통해 비용 절감과 동시에 친환경 경영을 강화';
+            } else if (input.includes('감축 전략') || input.includes('감축')) {
+                response = '• 데이터 기반의 배출량 분석을 통해 주요 배출원과 개선 영역을 식별\n• 머신러닝을 활용하여 생산 공정의 에너지 효율을 향상시키고 배출량을 최소화\n• 자동화된 보고서 생성과 규제 준수 모니터링을 통해 지속적인 감축 노력 지원';
+            } else if (input.includes('다른 분야') || input.includes('ESG 개선 분야')) {
+                response = '• 공급망 관리: AI는 공급망 전반에서 탄소 발자국을 추적하고 최적의 물류 경로를 제안\n• 자원 관리: 예측 분석을 통해 자원 사용을 최적화하고 폐기물을 최소화\n• 투자 분석: ESG 지표를 기반으로 투자 위험을 평가하고 지속 가능한 투자를 촉진';
+            } else if (input.includes('저감 목표') || input.includes('온실가스 목표')) {
+                response = '• 과거 배출 데이터를 분석하여 현실적인 감축 목표를 수립할 수 있도록 지원\n• 시뮬레이션을 통해 다양한 감축 시나리오를 검토하고 최적의 전략을 제안\n• 목표 달성을 위한 단계별 로드맵을 제공하며, 실시간 모니터링을 통해 진행 상황을 추적';
+            } else {
+                response = '• 요청하신 정보를 찾지 못했습니다.\n• 질문을 구체적으로 작성해주세요.';
+            }
+            addMessage(response, 'bot-message');
+        }
+    </script>
+</body>
+</html>
